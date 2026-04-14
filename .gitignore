@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+venv/
+.venv/
+*.py[cod]
+
+# C++ Build
+src/cpp/iris_engine
+
+# Data & Models
+*.pth
+*.onnx
+
+# OS
+.DS_Store
+.vscode/

@@ -1,0 +1,91 @@
+\documentclass[conference]{IEEEtran}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+
+\begin{document}
+
+\title{IRIS: Interactive Rendering \& Intelligent Spatial-modeling via Hybrid Neural Pipelines on Consumer-Grade GPUs}
+
+\author{\IEEEauthorblockN{George David Tsitlauri}
+\IEEEauthorblockA{\textit{Independent Research} \\
+Athens, Greece}}
+
+\maketitle
+
+\begin{abstract}
+This paper introduces IRIS, a real-time neural rendering and perception framework designed for commodity GPUs with a strict 4GB VRAM budget. On an NVIDIA GTX 1650, our FP16 pipeline sustains 27--29 FPS effective rendering through PRISM-GL temporal accumulation while keeping rendering memory near 0.1GB, reaches 30.19 Mrays/s hash-encoding throughput, and maintains autonomous perception latency at 1.54ms per frame while integrating mapping and decision-making in a unified CUDA-first stack.
+\end{abstract}
+
+\section{Introduction}
+Neural Radiance Fields (NeRF) have revolutionized 3D reconstruction but remain computationally expensive. IRIS addresses this by utilizing a hybrid C++/Python pipeline and FP16 optimizations.
+
+\section{Methodology: PRISM-GL}
+The PRISM-GL (Perceptual Real-time Iterative Scene Modeling) algorithm utilizes temporal reprojection and hash-encoding to minimize the computational footprint on Turing-architecture GPUs.
+
+\section{Hash Encoding Implementation}
+IRIS uses an Instant-NGP style multi-resolution hash encoder with $L=16$ levels, $F=2$ features per level, and a hash table size of $2^{19}$ entries per level. The per-level grid resolution grows geometrically from 16 to 512. Input 3D coordinates are quantized per level and mapped with spatial hashing to compact FP16 feature vectors, producing a 32-dimensional encoded representation. A compact MLP (64 hidden units, 2 layers) predicts RGB and density from encoded features and view direction.
+
+\section{PRISM-GL Temporal Accumulation}
+To suppress flickering under sparse ray sampling, IRIS applies temporal accumulation:
+\begin{equation}
+I_t^{acc} = (1 - \alpha) \cdot \hat{I}_{t-1 \rightarrow t} + \alpha \cdot I_t
+\end{equation}
+where $\hat{I}_{t-1 \rightarrow t}$ is the previous frame reprojected by motion vectors and $\alpha = 0.1$ in our experiments. This improves stability while preserving responsiveness for autonomous control.
+
+\section{Autonomous Vision Results}
+The autonomous agent consumes depth maps, flags near-field obstacles at $d_{min}<0.5m$, and executes a rule-based policy with states \{FORWARD, TURN\_LEFT, TURN\_RIGHT, STOP\}. Over 100 simulation steps, the agent maintains sub-5ms latency and produces consistent avoidance behavior while logging trajectory and decisions for downstream analysis.
+
+\section{Results}
+Experimental results were collected on an NVIDIA GTX 1650 (4GB VRAM), CUDA + PyTorch, FP16 execution.
+
+\begin{table}[h]
+\caption{Rendering Benchmarks (GTX 1650)}
+\centering
+\begin{tabular}{lccc}
+\hline
+Resolution & Precision & FPS & VRAM (MB) \\
+\hline
+720p (scale 0.125) & FP16 & 28.47 & 111 \\
+720p (scale 0.125) & FP32 & 57.56 & 164 \\
+1080p (scale 0.08) & FP16 & 27.81 & 103 \\
+1080p (scale 0.08) & FP32 & 31.84 & 156 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\caption{SLAM Accuracy and Speed}
+\centering
+\begin{tabular}{lcc}
+\hline
+Frames & Trajectory Error (m) & Latency / Frame (ms) \\
+\hline
+10 & 0.045 & 15.71 \\
+50 & 0.245 & 9.06 \\
+100 & 0.495 & 9.21 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\caption{Autonomous Agent Simulation}
+\centering
+\begin{tabular}{lcc}
+\hline
+Metric & Value & Notes \\
+\hline
+Mean latency & 1.54 ms & 100 steps \\
+Obstacle avoid rate & 1.00 & 77 avoids, 0 collisions \\
+Collisions & 0 & near-field hard stops \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Conclusion}
+IRIS proves that advanced spatial computing is feasible on edge devices, paving the way for low-cost autonomous robotics.
+
+\section{Target Venue Fit}
+The presented system aligns with CVPR and SIGGRAPH Asia interests in neural rendering efficiency, real-time perception, and hardware-aware deployment.
+
+\end{document}

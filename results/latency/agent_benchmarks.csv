@@ -1,0 +1,2 @@
+steps,mean_latency_ms,obstacles_avoided,collisions,obstacle_avoid_rate,total_distance_m
+100,1.5365,77,0,1.0000,2.300

@@ -1,5 +1,10 @@
 # IRIS: Interactive Rendering and Intelligent Spatial-Modeling
 
+**Author:** George David Tsitlauri  
+**Affiliation:** Dept. of Informatics & Telecommunications, University of Thessaly, Greece  
+**Contact:** gdtsitlauri@gmail.com  
+**Year:** 2026
+
 IRIS is a neural rendering + perception framework that runs with FP16/CUDA on consumer GPUs.  
 Primary target: NVIDIA GTX 1650 (4GB VRAM, SM 7.5) on Windows 11 + WSL2.
 
@@ -53,3 +58,15 @@ python3 src/python/benchmark_iris.py
 ## Notes
 - Rendering path is PyTorch/CUDA only (no OpenGL/Vulkan dependency).
 - Benchmark presets are constrained to complete within practical edge-device runtime limits.
+
+## Citation
+
+```bibtex
+@misc{tsitlauri2026iris,
+  author = {George David Tsitlauri},
+  title  = {IRIS: Interactive Rendering and Intelligent Spatial-Modeling via Hybrid Neural Pipelines on Consumer-Grade GPUs},
+  year   = {2026},
+  institution = {University of Thessaly},
+  email  = {gdtsitlauri@gmail.com}
+}
+```

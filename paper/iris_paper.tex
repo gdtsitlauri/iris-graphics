@@ -15,7 +15,7 @@ gdtsitlauri@gmail.com}}
 \maketitle
 
 \begin{abstract}
-This paper introduces IRIS, a real-time neural rendering and perception framework designed for commodity GPUs with a strict 4GB VRAM budget. On an NVIDIA GTX 1650, our FP16 pipeline sustains 27--29 FPS effective rendering through PRISM-GL temporal accumulation while keeping rendering memory near 0.1GB, reaches 30.19 Mrays/s hash-encoding throughput, and maintains autonomous perception latency at 1.54ms per frame while integrating mapping and decision-making in a unified CUDA-first stack.
+This paper introduces IRIS, a real-time neural rendering and perception framework designed for commodity GPUs with a strict 4GB VRAM budget. On an NVIDIA GTX 1650, the committed IRIS artifacts sustain roughly 27--29 FPS rendering while keeping rendering memory near 0.1GB, reach 30.19 Mrays/s hash-encoding throughput, and maintain low-latency SLAM and agent-loop execution in a unified CUDA-first stack. The strongest claim of the current release is therefore not universal renderer superiority, but the practicality of a bounded neural rendering and perception pipeline on a constrained consumer GPU.
 \end{abstract}
 
 \section{Introduction}
@@ -55,6 +55,15 @@ Resolution & Precision & FPS & VRAM (MB) \\
 \end{tabular}
 \end{table}
 
+\subsection{Interpretation Boundary}
+The IRIS results are best read as repository-specific hardware evidence for a
+consumer-GPU neural rendering and perception pipeline. They show that the
+current implementation can maintain practical throughput, low memory footprint,
+and fast perception latencies under the committed GTX 1650 setup. They are not
+intended to prove a universal ordering between FP16 and FP32 across all neural
+rendering workloads, nor to claim parity with much larger rendering or robotics
+systems.
+
 \begin{table}[h]
 \caption{SLAM Accuracy and Speed}
 \centering
@@ -83,8 +92,19 @@ Collisions & 0 & near-field hard stops \\
 \end{tabular}
 \end{table}
 
+\subsection{Why the Current Release Still Stands Up Well}
+The present IRIS release is stronger than a minimal prototype because it does
+not stop at an isolated renderer benchmark. The repository combines rendering,
+hash-encoding throughput, SLAM-style perception, and an autonomous agent loop
+inside one reproducible hardware-constrained stack. This gives IRIS a credible
+identity as an edge spatial-computing baseline even though its claims are
+deliberately bounded to the committed consumer-GPU configuration.
+
 \section{Conclusion}
-IRIS proves that advanced spatial computing is feasible on edge devices, paving the way for low-cost autonomous robotics.
+IRIS demonstrates that a compact spatial-computing pipeline can run credibly on
+an edge-class consumer GPU, providing a useful research baseline for
+lightweight neural rendering, SLAM-style perception, and low-latency autonomous
+decision loops.
 
 \section{Target Venue Fit}
 The presented system aligns with CVPR and SIGGRAPH Asia interests in neural rendering efficiency, real-time perception, and hardware-aware deployment.
